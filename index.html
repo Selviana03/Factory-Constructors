@@ -1,72 +1,37 @@
-// --- 1. ConnectionFactory (Database Pooling) ---
-class Connection {
-  final String id;
-  Connection(this.id);
-  void execute(String query) => print("Koneksi $id mengeksekusi: $query");
-}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Hasil Tugas Factory Pattern</title>
+    <style>
+        body { background-color: #1e1e1e; color: #d4d4d4; font-family: 'Courier New', monospace; padding: 20px; }
+        .terminal { border: 1px solid #333; padding: 20px; border-radius: 5px; background: #000; }
+        .code-link { color: #4fc1ff; text-decoration: none; }
+        h2 { color: #ce9178; }
+    </style>
+</head>
+<body>
 
-class ConnectionFactory {
-  // Pooling: menyimpan daftar koneksi yang tersedia
-  static final List<Connection> _pool = [Connection("DB-1"), Connection("DB-2")];
-  static int _index = 0;
+    <h2>Output Eksekusi Factory Pattern</h2>
+    <div class="terminal">
+        <pre>
+--- Test Latihan 1: Connection Pooling ---
+Koneksi DB-1 mengeksekusi: SELECT * FROM users
+Koneksi DB-2 mengeksekusi: SELECT * FROM products
 
-  // Mendapatkan koneksi berikutnya dari pool
-  static Connection getConnection() {
-    final conn = _pool[_index];
-    _index = (_index + 1) % _pool.length; // Mengulang index jika sudah habis
-    return conn;
-  }
-}
+--- Test Latihan 2: Notification Factory ---
+Mengirim via Email: Halo dari Email!
 
-// --- 2. NotificationFactory (Subclass selection) ---
-abstract class Notification {
-  void send(String message);
-}
+--- Test Latihan 3: Shape Factory Cache ---
+Apakah objek s1 dan s2 sama? true
+        </pre>
+    </div>
 
-class EmailNotification implements Notification {
-  @override
-  void send(String msg) => print("Mengirim via Email: $msg");
-}
+    <p>Lihat *source code* selengkapnya di:</p>
+    <ul>
+        <li><a class="code-link" href="[https://gist.github.com/5c0e154dd50af4a9ac856908061291bc]" target="_blank">GitHub Gist (Source Code)</a></li>
+        <li><a class="code-link" href="[https://dartpad.dev/?id=5c0e154dd50af4a9ac856908061291bc]" target="_blank">DartPad (Run Live)</a></li>
+    </ul>
 
-class PushNotification implements Notification {
-  @override
-  void send(String msg) => print("Mengirim via Push: $msg");
-}
-
-class NotificationFactory {
-  // Factory method memilih subclass berdasarkan platform
-  static Notification create(String platform) {
-    if (platform == 'email') return EmailNotification();
-    if (platform == 'push') return PushNotification();
-    throw Exception("Platform tidak dikenal");
-  }
-}
-
-// --- 3. ShapeFactory (Cache untuk objek yang sama) ---
-class Shape {
-  final String type;
-  Shape(this.type);
-}
-
-class ShapeFactory {
-  static final Map<String, Shape> _cache = {};
-  
-  // Jika sudah ada di cache, gunakan yang ada. Jika belum, buat baru.
-  static Shape getShape(String type) {
-    return _cache.putIfAbsent(type, () => Shape(type));
-  }
-}
-
-void main() {
-  print("--- Test Latihan 1: Connection Pooling ---");
-  ConnectionFactory.getConnection().execute("SELECT * FROM users");
-  ConnectionFactory.getConnection().execute("SELECT * FROM products");
-
-  print("\n--- Test Latihan 2: Notification Factory ---");
-  NotificationFactory.create('email').send('Halo dari Email!');
-
-  print("\n--- Test Latihan 3: Shape Factory Cache ---");
-  var s1 = ShapeFactory.getShape('lingkaran');
-  var s2 = ShapeFactory.getShape('lingkaran');
-  print("Apakah objek s1 dan s2 sama? ${identical(s1, s2)}"); // Hasilnya true
-}
+</body>
+</html>
